@@ -6,13 +6,19 @@ fn main() {
 }
 
 #[derive(Copy, Clone)]
+enum RPSThrow {
+    Rock = 1,
+    Paper = 2,
+    Scizzors = 3,
+}
+#[derive(Copy, Clone)]
 enum RPSResult {
     Loss = 0,
     Draw = 3,
     Win = 6,
 }
 fn day_2() {
-    let points_table = HashMap::<&str, u64>::from([
+    let points_table_throws = HashMap::<&str, u64>::from([
         ("A", 1),
         ("B", 2),
         ("C", 3),
@@ -20,7 +26,12 @@ fn day_2() {
         ("Y", 2),
         ("Z", 3),
     ]);
-    let results_table = HashMap::<&str, RPSResult>::from([
+    let points_table_results = HashMap::<&str, u64>::from([
+        ("X", 0),
+        ("Y", 3),
+        ("Z", 6),
+    ]);
+    let response_table = HashMap::<&str, RPSResult>::from([
         ("A X", RPSResult::Draw),
         ("A Y", RPSResult::Win),
         ("A Z", RPSResult::Loss),
@@ -31,6 +42,17 @@ fn day_2() {
         ("C Y", RPSResult::Loss),
         ("C Z", RPSResult::Draw),
     ]);
+    let results_table = HashMap::<&str, RPSThrow>::from([
+        ("A X", RPSThrow::Scizzors),
+        ("A Y", RPSThrow::Rock),
+        ("A Z", RPSThrow::Paper),
+        ("B X", RPSThrow::Rock),
+        ("B Y", RPSThrow::Paper),
+        ("B Z", RPSThrow::Scizzors),
+        ("C X", RPSThrow::Paper),
+        ("C Y", RPSThrow::Scizzors),
+        ("C Z", RPSThrow::Rock),
+    ]);
 
     let filename = String::from("input_files/day2");
     let contents = std::fs::read_to_string(filename).unwrap();
@@ -40,9 +62,11 @@ fn day_2() {
         if matchup.is_empty() { continue; }
         let mut itr = matchup.split(" ");
         let _them = itr.next().unwrap();
-        let me = itr.next().unwrap();
+        // let me = itr.next().unwrap();
+        let res = itr.next().unwrap();
 
-        let match_total = points_table[me] + results_table[matchup] as u64;
+        // let match_total = points_table[me] + results_table[matchup] as u64;
+        let match_total = points_table_results[res] + results_table[matchup] as u64;
         total_points += match_total;
     }
 
