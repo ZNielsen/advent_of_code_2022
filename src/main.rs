@@ -4,6 +4,58 @@ fn main() {
     day_1();
     day_2();
     day_3();
+    day_4();
+}
+
+
+fn day_4() {
+    let filename = String::from("input_files/day4");
+    let contents = std::fs::read_to_string(filename).unwrap();
+
+    let mut full_overlaps = 0;
+    let mut partial_overlaps = 0;
+    for pairs in contents.split("\n") {
+        if pairs.is_empty() { continue; }
+        let mut itr = pairs.split(",");
+        let elf1 = itr.next().unwrap();
+        let elf2 = itr.next().unwrap();
+
+        let mut itr = elf1.split("-");
+        let elf1_bot = u32::from_str_radix(itr.next().unwrap(), 10).unwrap();
+        let elf1_top = u32::from_str_radix(itr.next().unwrap(), 10).unwrap();
+        let mut itr = elf2.split("-");
+        let elf2_bot = u32::from_str_radix(itr.next().unwrap(), 10).unwrap();
+        let elf2_top = u32::from_str_radix(itr.next().unwrap(), 10).unwrap();
+
+        // Full overlap
+        let mut does_overlap = false;
+        if elf1_bot <= elf2_bot && elf1_top >= elf2_top {
+            does_overlap = true;
+        }
+        if elf2_bot <= elf1_bot && elf2_top >= elf1_top {
+            does_overlap = true;
+        }
+        if does_overlap {
+            full_overlaps += 1;
+        }
+
+        // Part overlap
+        let mut does_overlap = true;
+        if elf1_bot > elf2_top {
+            does_overlap = false;
+        }
+        if elf1_top < elf2_bot {
+            does_overlap = false;
+        }
+        if does_overlap {
+            partial_overlaps += 1;
+        }
+    }
+
+    println!("Day 4");
+    println!("Number of full overlaps: {}", full_overlaps);
+    println!("Number of part overlaps: {}", partial_overlaps);
+    println!("");
 }
 
 fn get_prio(ch: char) -> u32 {
@@ -133,7 +185,7 @@ fn day_2() {
         total_points_result += match_total_if_result;
     }
 
-    println!("Day 2:");
+    println!("Day 2");
     println!("If throw : {}", total_points_throw);
     println!("If result: {}", total_points_result);
     println!("");
@@ -153,7 +205,7 @@ fn day_1() {
 
     let top_three_total = heap.pop().unwrap() + heap.pop().unwrap() + heap.pop().unwrap();
 
-    println!("Day 1:");
+    println!("Day 1");
     println!("Top 3 elves have {} calories total", top_three_total);
     println!("");
 }
