@@ -5,8 +5,77 @@ fn main() {
     day_2();
     day_3();
     day_4();
+    day_5();
 }
 
+fn day_5() {
+    let filename = String::from("input_files/day5");
+    let contents = std::fs::read_to_string(filename).unwrap();
+
+    let mut input = contents.split("\n\n");
+    // Parse starting input
+    let mut stack_vec_9000 = parse_initial_setup(input.next().unwrap());
+    let mut stack_vec_9001 = stack_vec_9000.clone();
+    // Do each line operation
+    let cmds = input.next().unwrap();
+    for line in cmds.split("\n") {
+        if line.is_empty() { continue; }
+        let mut line_itr = line.split(" ");
+        let num    = usize::from_str_radix(line_itr.nth(1).unwrap(), 10).unwrap();
+        let source = usize::from_str_radix(line_itr.nth(1).unwrap(), 10).unwrap();
+        let dest   = usize::from_str_radix(line_itr.nth(1).unwrap(), 10).unwrap();
+
+        // Simulate CrateMover 9000
+        for _ in 0..num {
+            let tmp = stack_vec_9000[source-1].pop().unwrap();
+            stack_vec_9000[dest-1].push(tmp);
+        }
+
+        // Simulate CrateMover 9001
+        let mut tmp = Vec::new();
+        for _ in 0..num {
+            tmp.push(stack_vec_9001[source-1].pop().unwrap());
+        }
+        for item in tmp.into_iter().rev() {
+            stack_vec_9001[dest-1].push(item);
+        }
+    }
+
+    let mut result_string_9000 = String::new();
+    let mut result_string_9001 = String::new();
+    for mut stack in stack_vec_9000 {
+        result_string_9000.push_str(&stack.pop().unwrap());
+    }
+    for mut stack in stack_vec_9001 {
+        result_string_9001.push_str(&stack.pop().unwrap());
+    }
+
+    println!("Day 5");
+    println!("Top Boxes 9000: {}", result_string_9000);
+    println!("Top Boxes 9001: {}", result_string_9001);
+    println!("");
+}
+fn parse_initial_setup(input: &str) -> Vec<Vec<String>> {
+    let mut data: Vec<Vec<String>> = Vec::new();
+    for _ in 0..9 {
+        data.push(Vec::new());
+    }
+
+    for line in input.rsplit("\n") {
+        let mut itr = line.chars();
+        let ch = itr.nth(1).unwrap();
+        if ch.is_digit(10) { continue; } // Skip this, it's the label line
+        let mut ch = ch.to_string();
+        for idx in 0..9 {
+            if ch != " " {
+                data[idx].push(ch);
+            }
+            ch = itr.nth(3).unwrap_or(' ').to_string();
+        }
+    }
+
+    data
+}
 
 fn day_4() {
     let filename = String::from("input_files/day4");
