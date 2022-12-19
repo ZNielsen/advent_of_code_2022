@@ -272,9 +272,11 @@ fn day_1() {
         heap.push(this_sum);
     }
 
-    let top_three_total = heap.pop().unwrap() + heap.pop().unwrap() + heap.pop().unwrap();
+    let top_elf = heap.pop().unwrap();
+    let top_three_total = top_elf + heap.pop().unwrap() + heap.pop().unwrap();
 
     println!("Day 1");
-    println!("Top 3 elves have {} calories total", top_three_total);
+    println!("Top elf     : {} calories total", top_elf);
+    println!("Top 3 elves : {} calories total", top_three_total);
     println!("");
 }
