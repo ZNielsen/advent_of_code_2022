@@ -1,4 +1,4 @@
-use std::collections::{HashMap, HashSet, BinaryHeap};
+use std::collections::{HashMap, HashSet, BinaryHeap, VecDeque};
 
 fn main() {
     day_1();
@@ -6,6 +6,45 @@ fn main() {
     day_3();
     day_4();
     day_5();
+    day_6();
+}
+
+fn day_6() {
+    let filename = String::from("input_files/day6");
+    let contents = std::fs::read_to_string(filename).unwrap();
+
+    let mut packet_window = VecDeque::new();
+    let mut message_window = VecDeque::new();
+    let mut pos = 0;
+    let mut packet_pos = 0;
+    let mut message_pos = 0;
+    for ch in contents.chars() {
+        for window in [&mut packet_window, &mut message_window] {
+            if window.contains(&ch) {
+                while window.front().unwrap() != &ch {
+                    window.pop_front();
+                }
+                window.pop_front();
+            }
+            window.push_back(ch);
+        }
+        pos += 1;
+
+        if packet_window.len() == 4 && packet_pos == 0 {
+            packet_pos = pos;
+        }
+        if message_window.len() == 14 && message_pos == 0 {
+            message_pos = pos;
+        }
+        if message_pos != 0 && packet_pos != 0 {
+            break;
+        }
+    }
+
+    println!("Day 6");
+    println!("Packet starting point : {}", packet_pos);
+    println!("Message starting point: {}", message_pos);
+    println!("");
 }
 
 fn day_5() {
